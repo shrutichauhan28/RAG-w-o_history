@@ -20,7 +20,7 @@ load_dotenv()
 groq_api_key = os.getenv("GROQ_API_KEY")
 if not groq_api_key:
     st.error("GROQ API Key is missing. Please check your .env file.")
-    
+
 # Initialize the LLM with GROQ API
 llm = ChatGroq(groq_api_key=groq_api_key, model_name="Llama3-8b-8192")
 
@@ -70,6 +70,16 @@ def create_vector_embedding(text):
 # Streamlit application
 st.title("RAG Document Q&A With Groq And Lama3")
 
+# Custom CSS for button styling
+st.markdown("""
+    <style>
+    .css-1emrehy.edgvbvh3 {background-color: #1E3A8A; color: white; border: none; padding: 10px 20px; border-radius: 5px; font-size: 16px; font-weight: bold;}
+    .css-1emrehy.edgvbvh3:hover {background-color: #1D4ED8;}
+    .css-1e5vfr7 {background-color: #1E3A8A; color: white; border: none; padding: 10px 20px; border-radius: 5px; font-size: 16px; font-weight: bold;}
+    .css-1e5vfr7:hover {background-color: #1D4ED8;}
+    </style>
+""", unsafe_allow_html=True)
+
 user_prompt = st.text_input("Enter your query from the research paper")
 
 # Slider to control the number of documents used
@@ -94,12 +104,12 @@ if user_prompt:
         start = time.process_time()
         response = retrieval_chain.invoke({'input': user_prompt})
         elapsed_time = time.process_time() - start
-        st.write(f"Response time: {elapsed_time}")
+        st.write(f"Response time: {elapsed_time:.2f} seconds")
 
         st.write(response['answer'])
 
         # Display document similarity search results in a Streamlit expander
-        with st.expander("Document similarity Search"):
+        with st.expander("Document Similarity Search"):
             for doc in response['context'][:num_docs]:
                 st.write(doc.page_content)
                 st.write('------------------------')
